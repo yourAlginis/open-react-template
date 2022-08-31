@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Logo from './partials/Logo';
-
+import {ethers} from 'ethers'
+ 
 const propTypes = {
   navPosition: PropTypes.string,
   hideNav: PropTypes.bool,
@@ -20,7 +21,7 @@ const defaultProps = {
   bottomDivider: false
 }
 
-const Header = ({
+const Header = ({ 
   className,
   navPosition,
   hideNav,
@@ -30,6 +31,43 @@ const Header = ({
   ...props
 }) => {
 
+	const [errorMessage, setErrorMessage] = useState(null);
+   const [ defaultAccount, setDefaultAccount] = useState(null);
+	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
+ 
+    
+    // Connect to wallet 
+        const connectWalletHandler = () => {
+      if (window.ethereum) {
+
+        window.ethereum.request({ method: 'eth_requestAccounts'})
+        .then(result => {
+          accountChangedHandler(result[0]);
+          setConnButtonText('Wallet Connected');
+        })
+        .catch(error => {
+          setErrorMessage(error.message);
+        
+        });
+
+      } else {
+        console.log('Need to install MetaMask');
+        setErrorMessage('Please install MetaMask browser extension to interact');
+      }
+    }
+    // important to update account if we have, will cause component re-render
+     const accountChangedHandler = (newAccount) => {
+        setDefaultAccount(newAccount); 
+    }
+
+    const chainChangedHandler = () => {
+      // reload the page to avoid any errors with chain change mid use of application
+      window.location.reload();
+    }
+    // listen for account changes
+    window.ethereum.on('accountsChanged', accountChangedHandler);
+    window.ethereum.on('chainChanged', chainChangedHandler);
+   
   const [isActive, setIsactive] = useState(false);
 
   const nav = useRef(null);
@@ -74,7 +112,7 @@ const Header = ({
     className
   );
 
-  return (
+  return ( 
     <header
       {...props}
       className={classes}
@@ -112,15 +150,22 @@ const Header = ({
                       navPosition && `header-nav-${navPosition}`
                     )}>
                     <li>
-                      <Link to="#0" onClick={closeMenu}>Documentation</Link>
+                      <Link to="/" onClick={closeMenu}>Home</Link>
                     </li>
+                    <li>
+                      <Link to="/voting" onClick={closeMenu}>Ballot Voting</Link>
+                    </li>
+                    <li>
+                      <Link to="/payment" onClick={closeMenu}>Payment Dapp</Link>
+                    </li>
+                   
                   </ul>
                   {!hideSignin &&
                     <ul
                       className="list-reset header-nav-right"
                     >
                       <li>
-                        <Link to="#0" className="button button-primary button-wide-mobile button-sm" onClick={closeMenu}>Sign up</Link>
+                      <button className="button button-primary button-wide-mobile button-sm" onClick={connectWalletHandler}>{connButtonText}</button>
                       </li>
                     </ul>}
                 </div>
@@ -128,11 +173,11 @@ const Header = ({
             </>}
         </div>
       </div>
-    </header>
+    </header>   
   );
+  
 }
 
 Header.propTypes = propTypes;
-Header.defaultProps = defaultProps;
-
+Header.defaultProps = defaultProps; 
 export default Header;

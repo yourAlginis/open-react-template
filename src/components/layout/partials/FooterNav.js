@@ -18,18 +18,15 @@ const FooterNav = ({
       className={classes}
     >
       <ul className="list-reset">
-        <li>
-          <Link to="#0">Contact</Link>
-        </li>
-        <li>
-          <Link to="#0">About us</Link>
-        </li>
-        <li>
-          <Link to="#0">FAQ's</Link>
-        </li>
-        <li>
-          <Link to="#0">Support</Link>
-        </li>
+      <li>
+         <Link to="/"  >Home</Link>
+       </li>
+       <li>
+         <Link to="/voting"  >Ballot Voting</Link>
+       </li>
+       <li>
+          <Link to="/payment"  >Payment Dapp</Link>
+       </li>
       </ul>
     </nav>
   );

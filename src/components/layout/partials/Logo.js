@@ -20,11 +20,10 @@ const Logo = ({
     >
       <h1 className="m-0">
         <Link to="/">
-          <Image
-            src={require('./../../../assets/images/logo.svg')}
-            alt="Open"
-            width={32}
-            height={32} />
+       
+        
+            
+         <img src=" /images/web.svg" width={100} height={100} />
         </Link>
       </h1>
     </div>
